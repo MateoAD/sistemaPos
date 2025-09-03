@@ -170,6 +170,8 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
             }
         }
 
+
+
         .notification {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -657,6 +659,8 @@ function updateRealActivities() {
 
 function startRealTimeUpdates() {
     // Actualizar actividades cada 10 segundos
+        // Actualizar actividades cada 10 segundos
+
     setInterval(updateRealActivities, 10000);
     
     // Actualizar gráficos cada 30 segundos
