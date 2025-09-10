@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-08-2025 a las 21:16:22
+-- Tiempo de generación: 27-08-2025 a las 21:08:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -122,9 +122,10 @@ CREATE TABLE `menu` (
 --
 
 INSERT INTO `menu` (`id`, `nombre`, `descripcion`, `precio`, `foto`, `categoria`, `estado`, `created_at`, `updated_at`) VALUES
-(1, 'Pizza Margherita', 'Pizza con tomate, mozzarella y albahaca', 12.50, NULL, 'plato_fuerte', 'disponible', '2025-08-22 16:57:01', '2025-08-22 16:57:01'),
+(1, 'Pizza Margherita', 'Pizza con tomate, mozzarella y albahaca', 12.50, '68ae1b8f652af.png', 'plato_fuerte', 'disponible', '2025-08-22 16:57:01', '2025-08-26 20:39:43'),
 (2, 'Ensalada César', 'Ensalada con lechuga, pollo, croutones y aderezo César', 8.75, NULL, 'entrada', 'disponible', '2025-08-22 16:57:01', '2025-08-22 16:57:01'),
-(3, 'Tiramisú', 'Postre de café con mascarpone', 6.00, NULL, 'postre', 'disponible', '2025-08-22 16:57:01', '2025-08-22 16:57:01');
+(3, 'Tiramisú', 'Postre de café con mascarpone', 6.00, NULL, 'postre', 'disponible', '2025-08-22 16:57:01', '2025-08-26 20:40:04'),
+(4, 'limonada', 'limonada natural', 7.00, '68ae1d11d8639.png', 'bebida', 'disponible', '2025-08-26 20:46:09', '2025-08-26 20:46:09');
 
 -- --------------------------------------------------------
 
@@ -148,7 +149,8 @@ CREATE TABLE `mesas` (
 INSERT INTO `mesas` (`id`, `numero`, `sucursal_id`, `estado`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 'libre', '2025-08-22 16:57:01', '2025-08-22 16:57:01'),
 (2, 2, 1, 'ocupada', '2025-08-22 16:57:01', '2025-08-22 16:57:01'),
-(3, 3, 2, 'libre', '2025-08-22 16:57:01', '2025-08-22 16:57:01');
+(3, 3, 2, 'cerrada', '2025-08-22 16:57:01', '2025-08-26 21:43:07'),
+(4, 4, 1, 'libre', '2025-08-26 21:43:24', '2025-08-26 21:44:08');
 
 -- --------------------------------------------------------
 
@@ -246,11 +248,12 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `contraseña`, `rol_id`, `sucursal_id`, `estado`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '12345678', 1, 1, 'activo', '2025-08-22 15:30:34', '2025-08-22 15:30:34'),
-(2, 'admin', '12345678', 1, 1, 'activo', '2025-08-22 16:57:01', '2025-08-22 16:57:01'),
-(3, 'mesero1', 'pass1234', 2, 1, 'activo', '2025-08-22 16:57:01', '2025-08-22 16:57:01'),
-(4, 'cajero1', 'pass5678', 3, 2, 'activo', '2025-08-22 16:57:01', '2025-08-22 16:57:01');
+INSERT INTO `usuarios` (`id`, `nombre`, `contraseña`, `documento`, `rol_id`, `sucursal_id`, `estado`, `created_at`, `updated_at`) VALUES
+(1, 'admin', '12345678', 1054398407, 1, 1, 'activo', '2025-08-22 15:30:34', '2025-08-26 22:45:20'),
+(2, 'admin', '12345678', 1234123123, 1, 1, 'activo', '2025-08-22 16:57:01', '2025-08-27 19:07:18'),
+(3, 'mesero1', 'pass1234', 1234123123, 2, 1, 'inactivo', '2025-08-22 16:57:01', '2025-08-27 19:07:32'),
+(4, 'cajero1', 'pass5678', 1234123123, 3, 2, 'activo', '2025-08-22 16:57:01', '2025-08-27 19:07:36'),
+(5, 'Mateo', '12345678', 1234123123, 2, 1, 'activo', '2025-08-26 18:52:30', '2025-08-27 19:07:41');
 
 -- --------------------------------------------------------
 
@@ -263,6 +266,7 @@ CREATE TABLE `ventas` (
   `pedido_id` int(11) NOT NULL,
   `cajero_id` int(11) NOT NULL,
   `total` decimal(10,2) NOT NULL,
+  `tipo_pago` enum('efectivo','transferencia') NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
   `sucursal_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -271,10 +275,10 @@ CREATE TABLE `ventas` (
 -- Volcado de datos para la tabla `ventas`
 --
 
-INSERT INTO `ventas` (`id`, `pedido_id`, `cajero_id`, `total`, `fecha`, `sucursal_id`) VALUES
-(1, 1, 4, 25.00, '2025-08-22 16:57:01', 1),
-(2, 2, 4, 8.75, '2025-08-22 16:57:01', 1),
-(3, 3, 4, 18.00, '2025-08-22 16:57:01', 2);
+INSERT INTO `ventas` (`id`, `pedido_id`, `cajero_id`, `total`, `tipo_pago`, `fecha`, `sucursal_id`) VALUES
+(1, 1, 4, 25.00, 'efectivo', '2025-08-22 16:57:01', 1),
+(2, 2, 4, 8.75, 'efectivo', '2025-08-22 16:57:01', 1),
+(3, 3, 4, 18.00, 'efectivo', '2025-08-22 16:57:01', 2);
 
 --
 -- Índices para tablas volcadas
@@ -383,13 +387,13 @@ ALTER TABLE `gastos`
 -- AUTO_INCREMENT de la tabla `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `mesas`
 --
 ALTER TABLE `mesas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos`
@@ -401,7 +405,7 @@ ALTER TABLE `pedidos`
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `sucursales`
@@ -413,7 +417,7 @@ ALTER TABLE `sucursales`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`

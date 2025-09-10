@@ -310,12 +310,12 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
         </nav>
 
         <div class="p-6 border-t border-white border-opacity-20">
-            <button class="nav-item w-full">
+            <a href="../../controllers/index/logout.php" class="nav-item w-full block">
                 <div class="px-4 py-3 flex items-center text-gray-300 hover:text-white">
                     <i class="fas fa-sign-out-alt mr-3"></i>
                     <span class="sidebar-text">Cerrar Sesión</span>
                 </div>
-            </button>
+            </a>
         </div>
     </div>
 
@@ -338,6 +338,11 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
                             <span class="text-sm">Sistema Online</span>
                         </div>
                     </div>
+                    <a href="../../controllers/index/logout.php" 
+                       class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Cerrar Sesión
+                    </a>
                 </div>
             </div>
         </header>

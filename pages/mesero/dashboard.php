@@ -34,6 +34,8 @@ $sucursal_id = $stmt->fetchColumn();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Mesero - Sistema POS</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/orbitalert@latest/dist/orbitalert.min.css">
+<script src="https://cdn.jsdelivr.net/npm/orbitalert@latest/dist/orbitalert.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -55,19 +57,56 @@ $sucursal_id = $stmt->fetchColumn();
             padding: 20px;
             margin-bottom: 30px;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-left {
+            flex: 1;
         }
 
         .dashboard-title {
             color: white;
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-align: center;
         }
 
         .user-info {
             color: rgba(255, 255, 255, 0.9);
-            text-align: center;
             font-size: 1.2em;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logout-btn {
+                margin-top: 15px;
+            }
         }
 
         .mesas-container {
@@ -95,14 +134,35 @@ $sucursal_id = $stmt->fetchColumn();
         }
 
         .mesa-icon {
-            font-size: 4em;
-            margin-bottom: 15px;
+                width: 80px;
+                height: 80px;
+                font-size: 1.5rem;
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-content: center;
+                
+
         }
 
-        .mesa-libre { color: #4CAF50; }
-        .mesa-ocupada { color: #f44336; }
-        .mesa-cerrada { color: #9e9e9e; }
-        .mesa-preparacion { color: #ff9800; }
+      .mesa-libre {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .mesa-ocupada {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .mesa-cerrada {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .mesa-en-preparacion {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
 
         .mesa-numero {
             color: white;
@@ -367,10 +427,15 @@ $sucursal_id = $stmt->fetchColumn();
 </head>
 <body>
     <div class="dashboard-header">
-        <h1 class="dashboard-title">Dashboard Mesero</h1>
-        <div class="user-info">
-            Bienvenido, <?= htmlspecialchars($_SESSION['nombre'] ?? 'Mesero') ?>
+        <div class="header-left">
+            <h1 class="dashboard-title"><i class="fas fa-utensils"></i> Dashboard Mesero</h1>
+            <div class="user-info">
+                Bienvenido, <?= htmlspecialchars($_SESSION['nombre'] ?? 'Mesero') ?>
+            </div>
         </div>
+        <a href="../../controllers/index/logout.php" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
     </div>
 
     <div class="mesas-container">
@@ -509,37 +574,61 @@ $sucursal_id = $stmt->fetchColumn();
             registerBtn.disabled = false;
         }
 
-        function registrarPedido() {
-            if (!mesaIdActual || Object.keys(pedidoActual).length === 0) {
-                alert('Por favor selecciona al menos un producto');
-                return;
+   function registrarPedido() {
+        const productos = {};
+        
+        document.querySelectorAll('.quantity').forEach(el => {
+            const cantidad = parseInt(el.textContent);
+            if (cantidad > 0) {
+                const productoId = el.id.split('-')[1];
+                productos[productoId] = cantidad;
             }
+        });
 
-            const formData = new FormData();
-            formData.append('mesa_id', mesaIdActual);
-            formData.append('mesero_id', <?= $mesero_id ?>);
-            formData.append('sucursal_id', <?= $sucursal_id ?>);
-            formData.append('productos', JSON.stringify(pedidoActual));
-
-            fetch('../../controllers/dashboard_controller.php?action=crear', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Pedido registrado exitosamente');
-                    cerrarModal();
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al registrar el pedido');
-            });
+        if (Object.keys(productos).length === 0) {
+            Orbitalert.error('Debe seleccionar al menos un producto');
+            return;
         }
+
+        const loadingAlert = Orbitalert.loading('Procesando pedido...');
+        
+        // Usar URLSearchParams para envío más confiable
+        const params = new URLSearchParams();
+        params.append('action', 'crear');
+        params.append('mesa_id', mesaIdActual);
+        params.append('mesero_id', <?= $mesero_id ?>);
+        params.append('sucursal_id', <?= $sucursal_id ?>);
+        params.append('productos', JSON.stringify(productos));
+        
+        fetch('dashboard_controller.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: params
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            loadingAlert.close();
+            console.log('Server response:', data);
+            
+            if (data.success) {
+                Orbitalert.success(data.message);
+                cerrarModal();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                Orbitalert.error(data.message);
+            }
+        })
+        .catch(error => {
+            loadingAlert.close();
+            console.error('Error:', error);
+            Orbitalert.error('Error de conexión: ' + error.message);
+        });
+    }   
 
         // Cerrar modal al hacer clic fuera
         window.onclick = function(event) {
