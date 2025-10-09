@@ -42,20 +42,19 @@ $contadores = $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0F0F0F;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: #1E201F;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
         }
 
         .metric-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+            background: #1E201F;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.18);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -69,8 +68,8 @@ $contadores = $stmt->fetch(PDO::FETCH_ASSOC);
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
+            height: 5px;
+            background: linear-gradient(90deg, #ffea00, #ff7b00);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -90,6 +89,25 @@ $contadores = $stmt->fetch(PDO::FETCH_ASSOC);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ffea00, #ff7b00);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+
+        .chart-container:hover::before {
+            transform: scaleX(1);
         }
 
         .chart-container:hover {
@@ -136,6 +154,14 @@ $contadores = $stmt->fetch(PDO::FETCH_ASSOC);
             100% {
                 box-shadow: 0 0 0 0 rgba(0, 255, 136, 0);
             }
+        }
+
+        .glass-card-2 {
+            background: #1E201F;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
         .sidebar {
@@ -250,14 +276,15 @@ $contadores = $stmt->fetch(PDO::FETCH_ASSOC);
             <div class="chart-container p-6 mb-8">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-semibold text-white">Lista de Empleados</h3>
-                    <button class="btn-glow bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-all duration-300" onclick="abrirModalEmpleado()">
+                    <button  class="text-black px-4 py-2 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25"
+                    style="background: linear-gradient(45deg, #ffea00, #ff7b00);" onclick="abrirModalEmpleado()">
                         <i class="fas fa-plus mr-2"></i>Agregar Empleado
                     </button>
                 </div>
                 <div id="tablaEmpleados" style="display: none;">
                     <div class="table-glass rounded-xl overflow-hidden">
                         <table class="w-full">
-                            <thead class="bg-gray-800 bg-opacity-50">
+                            <thead class="bg-gray-900 bg-opacity-50">
                                 <tr>
                                     <th class="px-6 py-4 text-left text-gray-300 font-semibold">ID</th>
                                     <th class="px-6 py-4 text-left text-gray-300 font-semibold">Nombre</th>
@@ -297,54 +324,59 @@ $contadores = $stmt->fetch(PDO::FETCH_ASSOC);
             </div>
     </div>
 
-    <!-- Modal glamuroso -->
-    <div class="modal fade fixed inset-0 bg-black bg-opacity-50 z-50 hidden" id="modalEmpleado">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-gray-900 bg-opacity-90 backdrop-blur-xl rounded-2xl p-8 w-full max-w-md border border-gray-700">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold text-white" id="tituloModal">Agregar Empleado</h3>
-                    <button type="button" class="text-gray-400 hover:text-white text-2xl" onclick="cerrarModal()">&times;</button>
+    <!-- Modal de Gestión de Empleados -->
+    <div id="modalEmpleado"
+        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="glass-card-2 rounded-2xl p-8 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white" id="tituloModal">Agregar Empleado</h2>
+                <button onclick="cerrarModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <form id="formEmpleado" class="space-y-4 text-white">
+                <input type="hidden" id="empleadoId">
+                <div>
+                    <label class="block text-gray-300 mb-2">Nombre</label>
+                    <input type="text" id="nombre" required 
+                           class="w-full px-4 py-3 bg-black border border-white rounded-xl text-white focus:border-yellow-500 focus:ring-yellow-500 focus:outline-none">
                 </div>
-                <form id="formEmpleado" class="space-y-4">
-                    <input type="hidden" id="empleadoId">
-                    <div>
-                        <label class="block text-gray-300 mb-2">Nombre</label>
-                        <input type="text" id="nombre" required 
-                               class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-white focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 mb-2">Contraseña</label>
-                        <input type="password" id="contrasena" required 
-                               class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-white focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 mb-2">Rol</label>
-                        <select id="rolId" required 
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-white focus:border-blue-500 focus:outline-none">
-                            <option value="">Seleccione un rol</option>
-                            <option value="2">Mesero</option>
-                            <option value="4">Cocinero</option>
-                            <option value="3">Cajero</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 mb-2">Sucursal</label>
-                        <select id="sucursalId" required 
-                                class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-white focus:border-blue-500 focus:outline-none">
-                            <option value="">Seleccione una sucursal</option>
-                        </select>
-                    </div>
-                </form>
-                <div class="flex space-x-4 mt-6">
-                    <button type="button" onclick="cerrarModal()" 
-                            class="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-xl transition-colors duration-300">
-                        Cancelar
-                    </button>
-                    <button type="button" onclick="guardarEmpleado()" 
-                            class="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl transition-all duration-300 btn-glow">
-                        Guardar
-                    </button>
+                <div>
+                    <label class="block text-gray-300 mb-2">Contraseña</label>
+                    <input type="password" id="contrasena" required 
+                           class="w-full px-4 py-3 bg-black border border-white rounded-xl text-white focus:border-yellow-500 focus:ring-yellow-500 focus:outline-none">
                 </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Rol</label>
+                    <select id="rolId" required 
+                             class="w-full px-4 py-3 bg-black border border-white rounded-xl text-white focus:border-yellow-500 focus:ring-yellow-500 focus:outline-none">
+                        <option value="">Seleccione un rol</option>
+                        <option value="2">Mesero</option>
+                        <option value="4">Cocinero</option>
+                        <option value="3">Cajero</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Sucursal</label>
+                    <select id="sucursalId" required 
+                             class="w-full px-4 py-3 bg-black border border-white rounded-xl text-white focus:border-yellow-500 focus:ring-yellow-500 focus:outline-none">
+                        <option value="">Seleccione una sucursal</option>
+                    </select>
+                </div>
+            </form>
+
+            <div class="flex justify-end space-x-4 mt-8">
+                <button onclick="cerrarModal()"
+                    class="text-black px-4 py-2 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25"
+                    style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                    <i class="fas fa-times mr-2"></i>Cancelar
+                </button>
+                <button onclick="guardarEmpleado()"
+                    class="text-black px-4 py-2 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25"
+                    style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                    <i class="fas fa-save mr-2"></i>Guardar
+                </button>
             </div>
         </div>
     </div>

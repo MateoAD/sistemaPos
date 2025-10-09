@@ -43,6 +43,7 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,11 +56,11 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             theme: {
                 extend: {
                     colors: {
-                        primary: '#8B4513',
-                        secondary: '#D97706',
-                        accent: '#16A34A',
-                        dark: '#1C1917',
-                        light: '#FAF3E0'
+                        primary: '#0F0F0F',
+                        secondary: '#1E201F',
+                        accent: '#2C302F',
+                        dark: '#0F0F0F',
+                        light: '#1E201F'
                     }
                 }
             }
@@ -73,20 +74,60 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0F0F0F;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
+            color: #E0E0E0;
+
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: #1E201F;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card-1 {
+            background: #1E201F;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+         .glass-card-2 {
+            background: #1E201F;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ffea00, #ff7b00);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         .metric-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+            background: #1E201F;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.18);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -100,8 +141,8 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
+            height: 5px;
+            background: linear-gradient(90deg, #ffea00, #ff7b00);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -143,9 +184,11 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             0% {
                 box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7);
             }
+
             70% {
                 box-shadow: 0 0 0 10px rgba(0, 255, 136, 0);
             }
+
             100% {
                 box-shadow: 0 0 0 0 rgba(0, 255, 136, 0);
             }
@@ -176,6 +219,10 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: white;
         }
 
+        .text-glow {
+            text-shadow: 0 0 20px rgba(224, 224, 224, 0.3);
+        }
+
         .table-row {
             transition: all 0.3s ease;
         }
@@ -186,13 +233,14 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     </style>
 </head>
+
 <body>
     <?php include '../../components/navbar.php'; ?>
-    
+
     <div class="main-content ml-72 transition-all duration-300 p-8">
-        
+
         <!-- Header -->
-        <header class="glass-card rounded-2xl p-6 mb-8">
+        <header class="glass-card-1 rounded-2xl p-6 mb-8">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center">
                 <div>
                     <h2 class="text-3xl font-bold text-white mb-2">Gestión de Ventas</h2>
@@ -202,39 +250,48 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <div class="flex items-center space-x-4 mt-4 lg:mt-0">
-                    <div class="glass-card px-4 py-2 rounded-xl">
+                    <div class="glass-card-1 px-4 py-2 rounded-xl">
                         <div class="flex items-center text-white">
                             <div class="pulse-dot mr-2"></div>
                             <span class="text-sm">Sistema Activo</span>
                         </div>
                     </div>
                 </div>
+                
+                
             </div>
         </header>
+
         <!-- Modal de Detalles de Venta -->
-<div id="modalDetalles" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
-    <div class="glass-card rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-white">Detalles de Venta</h2>
-            <button onclick="cerrarModal()" class="text-gray-400 hover:text-white transition-colors">
-                <i class="fas fa-times text-xl"></i>
-            </button>
+        <div id="modalDetalles"
+            class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+            <div class="glass-card-2 rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-white">Detalles de Venta</h2>
+                    <button onclick="cerrarModal()" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div id="contenidoModal" class="text-white">
+                    <!-- Contenido dinámico se cargará aquí -->
+                </div>
+
+                <div class="flex justify-end space-x-4 mt-8">
+                    <button onclick="imprimirVenta()"
+                        class="text-black px-4 py-2 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25"
+                        style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                        <i class="fas fa-print mr-2"></i>Imprimir
+                    </button>
+                    <button onclick="descargarVenta()"
+                        class="text-black px-4 py-2 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25"
+                        style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                        <i class="fas fa-download mr-2"></i>Descargar PDF
+                    </button>
+                </div>
+            </div>
         </div>
-        
-        <div id="contenidoModal" class="text-white">
-            <!-- Contenido dinámico se cargará aquí -->
-        </div>
-        
-        <div class="flex justify-end space-x-4 mt-8">
-            <button onclick="imprimirVenta()" class="btn-glow bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300">
-                <i class="fas fa-print mr-2"></i>Imprimir
-            </button>
-            <button onclick="descargarVenta()" class="btn-glow bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl transition-all duration-300">
-                <i class="fas fa-download mr-2"></i>Descargar PDF
-            </button>
-        </div>
-    </div>
-</div>
+
         <!-- Cards de estadísticas glamurosas -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Total Ventas -->
@@ -245,7 +302,9 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="text-right">
                         <p class="text-gray-300 text-sm">Total Ventas</p>
-                        <p class="text-purple-400 text-2xl font-bold"><?php echo number_format($estadisticas['total_ventas']); ?></p>
+                        <p class="text-purple-400 text-2xl font-bold">
+                            <?php echo number_format($estadisticas['total_ventas']); ?>
+                        </p>
                     </div>
                 </div>
                 <h3 class="text-white text-xl font-bold mb-1">Ventas Realizadas</h3>
@@ -281,7 +340,8 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="text-right">
                         <p class="text-gray-300 text-sm">Total Recaudado</p>
-                        <p class="text-green-400 text-2xl font-bold">$<?php echo number_format($estadisticas['total_dinero'], 2); ?></p>
+                        <p class="text-green-400 text-2xl font-bold">
+                            $<?php echo number_format($estadisticas['total_dinero'], 2); ?></p>
                     </div>
                 </div>
                 <h3 class="text-white text-xl font-bold mb-1">Ingresos Totales</h3>
@@ -291,19 +351,18 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
         </div>
-             <!-- Tabla de Ventas -->
+        <!-- Tabla de Ventas -->
         <div class="glass-card rounded-2xl p-6">
-                <!-- Filtros y Búsqueda -->
-             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Filtros y Búsqueda -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Buscar</label>
-                    <input type="text" id="busqueda" placeholder="Buscar ventas..." 
-                           class="w-full px-4 py-2 rounded-xl search-input text-white placeholder-gray-400">
+                    <input type="text" id="busqueda" placeholder="Buscar ventas..."
+                        class="w-full px-4 py-2 rounded-xl search-input text-white placeholder-gray-400">
                 </div>
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Fecha</label>
-                    <input type="date" id="filtroFecha" 
-                           class="w-full px-4 py-2 rounded-xl filter-select">
+                    <input type="date" id="filtroFecha" class="w-full px-4 py-2 rounded-xl filter-select">
                 </div>
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Cajero</label>
@@ -334,15 +393,17 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </select>
                 </div>
             </div>
-            
-                 <!-- Tabla -->
+
+            <!-- Tabla -->
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-semibold text-white">Últimas Ventas</h3>
-                <button onclick="actualizarTabla()" class="btn-glow bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-all duration-300">
+                <button onclick="actualizarTabla()"
+                    class="text-black px-4 py-2 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25"
+                    style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
                     <i class="fas fa-sync-alt mr-2"></i>Actualizar
                 </button>
             </div>
-            
+
             <div class="overflow-x-auto">
                 <div class="table-glass rounded-xl">
                     <table class="w-full">
@@ -359,26 +420,29 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </thead>
                         <tbody id="tbodyVentas" class="divide-y divide-gray-700">
                             <?php foreach ($ventas_recientes as $venta): ?>
-                            <tr class="table-row">
-                                <td class="px-6 py-4 text-gray-300">#<?php echo $venta['id']; ?></td>
-                                <td class="px-6 py-4 text-white"><?php echo date('d/m/Y H:i', strtotime($venta['fecha'])); ?></td>
-                                <td class="px-6 py-4 text-gray-300">Mesa <?php echo $venta['numero_mesa']; ?></td>
-                                <td class="px-6 py-4 text-white font-medium"><?php echo $venta['cajero']; ?></td>
-                                <td class="px-6 py-4 text-gray-300"><?php echo $venta['sucursal']; ?></td>
-                                <td class="px-6 py-4 text-green-400 font-bold">$<?php echo number_format($venta['total'], 2); ?></td>
-                                <td class="px-6 py-4">
-                                    <button onclick="verDetalles(<?php echo $venta['id']; ?>)" 
+                                <tr class="table-row">
+                                    <td class="px-6 py-4 text-gray-300">#<?php echo $venta['id']; ?></td>
+                                    <td class="px-6 py-4 text-white">
+                                        <?php echo date('d/m/Y H:i', strtotime($venta['fecha'])); ?>
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-300">Mesa <?php echo $venta['numero_mesa']; ?></td>
+                                    <td class="px-6 py-4 text-white font-medium"><?php echo $venta['cajero']; ?></td>
+                                    <td class="px-6 py-4 text-gray-300"><?php echo $venta['sucursal']; ?></td>
+                                    <td class="px-6 py-4 text-green-400 font-bold">
+                                        $<?php echo number_format($venta['total'], 2); ?></td>
+                                    <td class="px-6 py-4">
+                                        <button onclick="verDetalles(<?php echo $venta['id']; ?>)"
                                             class="text-blue-400 hover:text-blue-300 transition-colors">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
-            
+
             <div class="mt-4 text-center">
                 <p class="text-gray-400 text-sm">Mostrando últimas 10 ventas. Desliza para ver más registros.</p>
             </div>
@@ -392,14 +456,14 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             const fecha = document.getElementById('filtroFecha').value;
             const cajero = document.getElementById('filtroCajero').value;
             const sucursal = document.getElementById('filtroSucursal').value;
-            
+
             // Construir URL con parámetros
             let url = `../../controllers/admin/ventas_controller.php?action=filtrarVentas`;
             if (busqueda) url += `&busqueda=${encodeURIComponent(busqueda)}`;
             if (fecha) url += `&fecha=${fecha}`;
             if (cajero) url += `&cajero=${cajero}`;
             if (sucursal) url += `&sucursal=${sucursal}`;
-            
+
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -412,12 +476,12 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         function actualizarTablaVentas(ventas) {
             const tbody = document.getElementById('tbodyVentas');
             tbody.innerHTML = '';
-            
+
             if (ventas.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-400">No hay ventas encontradas</td></tr>';
                 return;
             }
-            
+
             ventas.forEach(venta => {
                 const tr = document.createElement('tr');
                 tr.className = 'table-row';
@@ -439,33 +503,52 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
         }
 
-       function verDetalles(ventaId) {
-    fetch(`../../controllers/admin/ventas_controller.php?action=getDetallesVenta&id=${ventaId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const venta = data.data;
-                const modal = document.getElementById('modalDetalles');
-                const contenido = document.getElementById('contenidoModal');
-                
-                let productosHTML = '';
-                venta.productos.forEach(producto => {
-                    productosHTML += `
-                        <tr class="border-b border-gray-600">
-                            <td class="py-3">${producto.producto}</td>
-                            <td class="py-3 text-center">${producto.cantidad}</td>
-                            <td class="py-3 text-right">$${parseFloat(producto.precio_unitario).toFixed(2)}</td>
-                            <td class="py-3 text-right font-bold">$${parseFloat(producto.subtotal).toFixed(2)}</td>
-                        </tr>
-                    `;
-                });
-                
-                contenido.innerHTML = `
+        function verDetalles(ventaId) {
+            console.log('Obteniendo detalles de venta ID:', ventaId);
+
+            fetch(`../../controllers/admin/ventas_controller.php?action=getDetallesVenta&id=${ventaId}`)
+                .then(response => {
+                    console.log('Respuesta recibida:', response);
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Datos recibidos:', data);
+                    if (data.success) {
+                        const venta = data.data;
+                        const modal = document.getElementById('modalDetalles');
+                        const contenido = document.getElementById('contenidoModal');
+
+                        // Validar datos de venta
+                        if (!venta) {
+                            alert('Error: No se recibieron datos de la venta');
+                            return;
+                        }
+
+                        let productosHTML = '';
+                        if (venta.productos && venta.productos.length > 0) {
+                            venta.productos.forEach(producto => {
+                                productosHTML += `
+                            <tr class="border-b border-gray-600">
+                                <td class="py-3">${producto.producto || 'Producto sin nombre'}</td>
+                                <td class="py-3 text-center">${producto.cantidad || 0}</td>
+                                <td class="py-3 text-right">${parseFloat(producto.precio_unitario || 0).toFixed(2)}</td>
+                                <td class="py-3 text-right font-bold">${parseFloat(producto.subtotal || 0).toFixed(2)}</td>
+                            </tr>
+                        `;
+                            });
+                        } else {
+                            productosHTML = '<tr><td colspan="4" class="py-3 text-center text-gray-400">No hay productos en esta venta</td></tr>';
+                        }
+
+                        contenido.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="glass-card rounded-xl p-4">
                             <h3 class="text-lg font-semibold text-blue-400 mb-2">Información General</h3>
                             <p><strong>Venta ID:</strong> #${venta.id}</p>
-                            <p><strong>Fecha:</strong> ${new Date(venta.fecha).toLocaleString('es-ES')}</p>
+                            <p><strong>Fecha:</strong> ${venta.fecha ? new Date(venta.fecha).toLocaleString('es-ES') : 'Fecha no disponible'}</p>
                             <p><strong>Mesa:</strong> ${venta.numero_mesa}</p>
                         </div>
                         <div class="glass-card rounded-xl p-4">
@@ -492,26 +575,33 @@ $ventas_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <tfoot>
                                 <tr class="border-t-2 border-green-400">
                                     <td colspan="3" class="py-4 text-right font-bold text-xl">TOTAL:</td>
-                                    <td class="py-4 text-right font-bold text-green-400 text-xl">$${parseFloat(venta.total).toFixed(2)}</td>
+                                    <td class="py-4 text-right font-bold text-green-400 text-xl">${parseFloat(venta.total || 0).toFixed(2)}</td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                 `;
-                
-                modal.classList.remove('hidden');
-            }
-        });
-}
 
-function cerrarModal() {
-    document.getElementById('modalDetalles').classList.add('hidden');
-}
+                        modal.classList.remove('hidden');
+                    } else {
+                        console.error('Error al obtener detalles:', data.error);
+                        alert('Error al obtener detalles de la venta: ' + (data.error || 'Error desconocido'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en la petición:', error);
+                    alert('Error al conectar con el servidor: ' + error.message);
+                });
+        }
 
-function imprimirVenta() {
-    const contenido = document.getElementById('contenidoModal').innerHTML;
-    const ventana = window.open('', '_blank');
-    ventana.document.write(`
+        function cerrarModal() {
+            document.getElementById('modalDetalles').classList.add('hidden');
+        }
+
+        function imprimirVenta() {
+            const contenido = document.getElementById('contenidoModal').innerHTML;
+            const ventana = window.open('', '_blank');
+            ventana.document.write(`
         <html>
             <head>
                 <title>Ticket de Venta</title>
@@ -531,29 +621,29 @@ function imprimirVenta() {
             </body>
         </html>
     `);
-    ventana.document.close();
-    ventana.print();
-}
+            ventana.document.close();
+            ventana.print();
+        }
 
-function descargarVenta() {
-    const contenido = document.getElementById('contenidoModal').innerHTML;
-    const blob = new Blob([contenido], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `venta_${new Date().getTime()}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
+        function descargarVenta() {
+            const contenido = document.getElementById('contenidoModal').innerHTML;
+            const blob = new Blob([contenido], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `venta_${new Date().getTime()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
 
-// Cerrar modal al hacer clic fuera
-document.getElementById('modalDetalles').addEventListener('click', function(e) {
-    if (e.target === this) {
-        cerrarModal();
-    }
-});
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalDetalles').addEventListener('click', function (e) {
+            if (e.target === this) {
+                cerrarModal();
+            }
+        });
 
         // Event listeners para filtros en tiempo real
         document.getElementById('busqueda').addEventListener('input', actualizarTabla);
@@ -565,4 +655,5 @@ document.getElementById('modalDetalles').addEventListener('click', function(e) {
         setInterval(actualizarTabla, 30000);
     </script>
 </body>
+
 </html>

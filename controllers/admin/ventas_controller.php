@@ -95,23 +95,44 @@ function getDetallesVenta() {
         $stmt->execute([$id]);
         $venta = $stmt->fetch(PDO::FETCH_ASSOC);
         
+        if (!$venta) {
+            echo json_encode(['success' => false, 'error' => 'Venta no encontrada']);
+            return;
+        }
+        
         // Productos de la venta
         $stmt2 = $pdo->prepare("SELECT 
                               dp.cantidad,
-                              dp.precio_unitario,
-                              dp.subtotal,
-                              pr.nombre as producto
-                              FROM detalles_pedido dp
-                              JOIN productos pr ON dp.producto_id = pr.id
+                              m.precio as precio_unitario,
+                              (dp.cantidad * m.precio) as subtotal,
+                              m.nombre as producto
+                              FROM detalle_pedido dp
+                              JOIN menu m ON dp.plato_id = m.id
                               WHERE dp.pedido_id = ?");
         $stmt2->execute([$venta['pedido_id']]);
         $productos = $stmt2->fetchAll(PDO::FETCH_ASSOC);
         
+        // Si no hay productos, inicializar array vacío
+        if (!$productos) {
+            $productos = [];
+        }
+        
         $venta['productos'] = $productos;
+        
+        // Debug: Verificar datos
+        error_log("Venta ID: " . $venta['id'] . ", Pedido ID: " . $venta['pedido_id'] . ", Productos: " . count($productos));
+        
+        // Asegurar que todos los campos necesarios existen
+        $venta['id'] = $venta['id'] ?? '';
+        $venta['fecha'] = $venta['fecha'] ?? '';
+        $venta['total'] = $venta['total'] ?? '0.00';
+        $venta['cajero'] = $venta['cajero'] ?? 'Desconocido';
+        $venta['sucursal'] = $venta['sucursal'] ?? 'Desconocida';
+        $venta['numero_mesa'] = $venta['numero_mesa'] ?? 'N/A';
         
         echo json_encode(['success' => true, 'data' => $venta]);
     } catch (Exception $e) {
-        echo json_encode(['error' => $e->getMessage()]);
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
 }
 ?>

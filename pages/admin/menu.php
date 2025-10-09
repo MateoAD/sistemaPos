@@ -25,6 +25,7 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,20 +55,51 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0F0F0F;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: #1E201F;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ffea00, #ff7b00);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .glass-card-1 {
+            background: #1E201F;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-card-2 {
+            background: #1E201F;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
         .metric-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+            background: #1E201F;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.18);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -81,8 +113,8 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
+            height: 5px;
+            background: linear-gradient(90deg, #ffea00, #ff7b00);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -124,9 +156,11 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
             0% {
                 box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7);
             }
+
             70% {
                 box-shadow: 0 0 0 10px rgba(0, 255, 136, 0);
             }
+
             100% {
                 box-shadow: 0 0 0 0 rgba(0, 255, 136, 0);
             }
@@ -208,12 +242,13 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
         }
     </style>
 </head>
+
 <body>
     <?php include '../../components/navbar.php'; ?>
-    
+
     <div class="main-content ml-72 transition-all duration-300 p-8">
         <!-- Header -->
-        <header class="glass-card rounded-2xl p-6 mb-8">
+        <header class="glass-card-1 rounded-2xl p-6 mb-8">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center">
                 <div>
                     <h2 class="text-3xl font-bold text-white mb-2">Gestión de Menú</h2>
@@ -223,7 +258,7 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <div class="flex items-center space-x-4 mt-4 lg:mt-0">
-                    <div class="glass-card px-4 py-2 rounded-xl">
+                    <div class="glass-card-1 px-4 py-2 rounded-xl">
                         <div class="flex items-center text-white">
                             <div class="pulse-dot mr-2"></div>
                             <span class="text-sm">Sistema Activo</span>
@@ -243,7 +278,9 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
                     <div class="text-right">
                         <p class="text-gray-300 text-sm">Total Productos</p>
-                        <p class="text-purple-400 text-2xl font-bold"><?php echo number_format($estadisticas['total_productos']); ?></p>
+                        <p id="totalProductos" class="text-purple-400 text-2xl font-bold">
+                            <?php echo number_format($estadisticas['total_productos']); ?>
+                        </p>
                     </div>
                 </div>
                 <h3 class="text-white text-xl font-bold mb-1">Productos Registrados</h3>
@@ -258,7 +295,9 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
                     <div class="text-right">
                         <p class="text-gray-300 text-sm">Activos</p>
-                        <p class="text-green-400 text-2xl font-bold"><?php echo number_format($estadisticas['productos_activos']); ?></p>
+                       <p id="productosActivos" class="text-green-400 text-2xl font-bold">
+    <?php echo number_format($estadisticas['productos_activos']); ?>
+</p>
                     </div>
                 </div>
                 <h3 class="text-white text-xl font-bold mb-1">Disponibles</h3>
@@ -273,7 +312,9 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
                     <div class="text-right">
                         <p class="text-gray-300 text-sm">Precio Promedio</p>
-                        <p class="text-blue-400 text-2xl font-bold">$<?php echo number_format($estadisticas['precio_promedio'], 2); ?></p>
+                       <p id="precioPromedio" class="text-blue-400 text-2xl font-bold">
+    $<?php echo number_format($estadisticas['precio_promedio'], 2); ?>
+</p>
                     </div>
                 </div>
                 <h3 class="text-white text-xl font-bold mb-1">Costo Medio</h3>
@@ -283,12 +324,12 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
 
         <!-- Tabla de productos -->
         <div class="glass-card rounded-2xl p-6 ">
-                    <!-- Filtros y búsqueda -->
+            <!-- Filtros y búsqueda -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Buscar</label>
-                    <input type="text" id="busqueda" placeholder="Buscar productos..." 
-                           class="w-full px-4 py-2 rounded-xl search-input text-white placeholder-gray-400">
+                    <input type="text" id="busqueda" placeholder="Buscar productos..."
+                        class="w-full px-4 py-2 rounded-xl search-input text-white placeholder-gray-400">
                 </div>
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Categoría</label>
@@ -308,23 +349,25 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
                     </select>
                 </div>
             </div>
-           <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-between items-center mb-6">
 
-    <h3 class="text-xl font-semibold text-white">Lista de Productos</h3>
-    
-    <!-- Contenedor para los botones -->
-    <div class="flex space-x-4">
-        <button onclick="abrirModalPlato()" 
-            class="btn-glow bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center">
-            <i class="fas fa-plus mr-2"></i>Agregar Plato
-        </button>
+                <h3 class="text-xl font-semibold text-white">Lista de Productos</h3>
 
-        <button onclick="abrirModalCategoria()" 
-            class="btn-glow bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center">
-            <i class="fas fa-tag mr-2"></i>Agregar Categoría
-        </button>
-    </div>
-</div>            
+                <!-- Contenedor para los botones -->
+                <div class="flex space-x-4">
+                    <button onclick="abrirModalPlato()"
+                        class="text-black px-4 py-2 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25"
+                        style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                        <i class="fas fa-plus mr-2"></i>Agregar Plato
+                    </button>
+
+                    <button onclick="abrirModalCategoria()"
+                        class="text-black px-4 py-2 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25"
+                        style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                        <i class="fas fa-tag mr-2"></i>Agregar Categoría
+                    </button>
+                </div>
+            </div>
             <div class="overflow-x-auto">
                 <div class="table-glass rounded-xl">
                     <table class="w-full">
@@ -340,47 +383,53 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
                         </thead>
                         <tbody id="tbodyProductos" class="divide-y divide-gray-700">
                             <?php foreach ($productos as $producto): ?>
-                            <tr class="table-row">
-                                <td class="px-6 py-4">
-                                    <?php if ($producto['foto']): ?>
-                                        <img src="../../uploads/<?php echo $producto['foto']; ?>" alt="<?php echo $producto['nombre']; ?>" class="product-image">
-                                    <?php else: ?>
-                                        <div class="product-image bg-gray-600 flex items-center justify-center">
-                                            <i class="fas fa-utensils text-gray-400"></i>
-                                        </div>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="text-white font-medium"><?php echo $producto['nombre']; ?></div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 bg-blue-500 bg-opacity-20 text-blue-300 rounded-full text-xs">
-                                        <?php echo $producto['categoria']; ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-green-400 font-bold">$<?php echo number_format($producto['precio'], 2); ?></td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 rounded-full text-xs <?php echo $producto['estado'] == 'disponible' ? 'bg-green-500 bg-opacity-20 text-green-300' : 'bg-red-500 bg-opacity-20 text-red-300'; ?>">
-                                        <?php echo $producto['estado_texto']; ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex space-x-2">
-                                        <button onclick="editarProducto(<?php echo $producto['id']; ?>)" 
+                                <tr class="table-row">
+                                    <td class="px-6 py-4">
+                                        <?php if ($producto['foto']): ?>
+                                            <img src="../../uploads/<?php echo $producto['foto']; ?>"
+                                                alt="<?php echo $producto['nombre']; ?>" class="product-image">
+                                        <?php else: ?>
+                                            <div class="product-image bg-gray-600 flex items-center justify-center">
+                                                <i class="fas fa-utensils text-gray-400"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-white font-medium"><?php echo $producto['nombre']; ?></div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 bg-blue-500 bg-opacity-20 text-blue-300 rounded-full text-xs">
+                                            <?php echo $producto['categoria']; ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-green-400 font-bold">
+                                        $<?php echo number_format($producto['precio'], 2); ?></td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 rounded-full text-xs <?php echo $producto['estado'] == 'disponible' ? 'bg-green-500 bg-opacity-20 text-green-300' : 'bg-red-500 bg-opacity-20 text-red-300'; ?>">
+                                            <?php echo $producto['estado_texto']; ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex space-x-2">
+                                            <button onclick="editarProducto(<?php echo $producto['id']; ?>)"
                                                 class="text-blue-400 hover:text-blue-300 transition-colors">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button onclick="cambiarEstado(<?php echo $producto['id']; ?>, '<?php echo $producto['estado']; ?>')" 
-                                                class="text-yellow-400 hover:text-yellow-300 transition-colors">
-                                            <i class="fas fa-toggle-on"></i>
-                                        </button>
-                                        <button onclick="eliminarProducto(<?php echo $producto['id']; ?>)" 
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button
+                                                onclick="cambiarEstado(<?php echo $producto['id']; ?>, '<?php echo $producto['estado']; ?>')"
+                                                class="transition-colors <?php echo $producto['estado'] == 'disponible' ? 'text-green-400 hover:text-green-300' : 'text-gray-400 hover:text-gray-300'; ?>">
+                                                <i
+                                                    class="fas <?php echo $producto['estado'] == 'disponible' ? 'fa-toggle-on' : 'fa-toggle-off'; ?>"></i>
+                                            </button>
+                                            <button onclick="eliminarProducto(<?php echo $producto['id']; ?>)"
                                                 class="text-red-400 hover:text-red-300 transition-colors">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
@@ -390,36 +439,39 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <!-- Modal Agregar/Editar Plato -->
-    <div id="modalPlato" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div id="modalPlato"
+        class="  fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
         <div class="modal-backdrop absolute inset-0"></div>
-        <div class="glass-card rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto relative z-10">
+        <div class="glass-card-2 rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto relative z-10">
             <div class="flex justify-between items-center mb-6">
                 <h2 id="tituloModalPlato" class="text-2xl font-bold text-white">Agregar Plato</h2>
                 <button onclick="cerrarModal('modalPlato')" class="text-gray-400 hover:text-white transition-colors">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            
+
             <form id="formPlato" enctype="multipart/form-data">
                 <input type="hidden" id="platoId" name="id">
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-gray-300 text-sm mb-2">Nombre del Plato</label>
-                        <input type="text" id="nombre" name="nombre" required 
-                               class="w-full px-4 py-2 rounded-xl form-input" placeholder="Ej: Pizza Margherita">
+                        <input type="text" id="nombre" name="nombre" required
+                            class="w-full bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:border-yellow-500 focus:ring focus:ring-yellow-500/20 transition-all"
+                            placeholder="Ej: Pizza Margherita">
                     </div>
-                    
+
                     <div>
                         <label class="block text-gray-300 text-sm mb-2">Precio</label>
-                        <input type="number" id="precio" name="precio" step="0.01" required 
-                               class="w-full px-4 py-2 rounded-xl form-input" placeholder="0.00">
+                        <input type="number" id="precio" name="precio" step="0.01" required
+                            class="w-full bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:border-yellow-500 focus:ring focus:ring-yellow-500/20 transition-all"
+                            placeholder="0.00">
                     </div>
-                    
+
                     <div>
                         <label class="block text-gray-300 text-sm mb-2">Categoría</label>
-                        <select id="categoria" name="categoria" required 
-                                class="w-full px-4 py-2 rounded-xl form-input">
+                        <select id="categoria" name="categoria" required
+                            class="w-full bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:border-yellow-500 focus:ring focus:ring-yellow-500/20 transition-all">
                             <option value="">Seleccione categoría</option>
                             <option value="entrada">Entrada</option>
                             <option value="plato_fuerte">Plato Fuerte</option>
@@ -428,29 +480,29 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
                             <option value="adicional">Adicional</option>
                         </select>
                     </div>
-                    
+
                     <div>
                         <label class="block text-gray-300 text-sm mb-2">Estado</label>
-                        <select id="estado" name="estado" required 
-                                class="w-full px-4 py-2 rounded-xl form-input">
+                        <select id="estado" name="estado" required
+                            class="w-full bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:border-yellow-500 focus:ring focus:ring-yellow-500/20 transition-all">
                             <option value="disponible">Disponible</option>
                             <option value="no_disponible">No Disponible</option>
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="mt-6">
                     <label class="block text-gray-300 text-sm mb-2">Descripción</label>
-                    <textarea id="descripcion" name="descripcion" rows="3" 
-                              class="w-full px-4 py-2 rounded-xl form-input" 
-                              placeholder="Descripción del plato..."></textarea>
+                    <textarea id="descripcion" name="descripcion" rows="3"
+                        class="w-full bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:border-yellow-500 focus:ring focus:ring-yellow-500/20 transition-all"
+                        placeholder="Descripción del plato..."></textarea>
                 </div>
-                
+
                 <div class="mt-6">
                     <label class="block text-gray-300 text-sm mb-2">Foto del Plato</label>
                     <div class="file-upload rounded-xl p-6 text-center">
-                        <input type="file" id="foto" name="foto" accept="image/*" 
-                               class="hidden" onchange="mostrarPreview(this)">
+                        <input type="file" id="foto" name="foto" accept="image/*" class="hidden"
+                            onchange="mostrarPreview(this)">
                         <label for="foto" class="cursor-pointer">
                             <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
                             <p class="text-gray-300">Haz clic para subir una imagen</p>
@@ -458,15 +510,17 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
                         </label>
                     </div>
                 </div>
-                
+
                 <div class="flex justify-end space-x-4 mt-8">
-                    <button type="button" onclick="cerrarModal('modalPlato')" 
-                            class="px-6 py-3 text-gray-300 hover:text-white transition-colors">
-                        Cancelar
+                    <button type="button" onclick="cerrarModal('modalPlato')"
+                        class="px-6 py-3 font-semibold rounded-xl text-black transition-all duration-300"
+                        style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                        <i class="fas fa-times mr-2"></i> Cancelar
                     </button>
-                    <button type="submit" 
-                            class="btn-glow bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300">
-                        <i class="fas fa-save mr-2"></i>Guardar
+                    <button type="submit"
+                        class="px-6 py-3 font-semibold rounded-xl text-black transition-all duration-300"
+                        style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                        <i class="fas fa-save mr-2"></i> Guardar
                     </button>
                 </div>
             </form>
@@ -474,30 +528,35 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <!-- Modal Agregar Categoría -->
-    <div id="modalCategoria" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
-        <div class="glass-card rounded-2xl p-8 max-w-md w-full mx-4">
+    <div id="modalCategoria"
+        class=" fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="glass-card-2 rounded-2xl p-8 max-w-md w-full mx-4">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-white">Agregar Categoría</h2>
-                <button onclick="cerrarModal('modalCategoria')" class="text-gray-400 hover:text-white transition-colors">
+                <button onclick="cerrarModal('modalCategoria')"
+                    class="text-gray-400 hover:text-white transition-colors">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            
+
             <form id="formCategoria">
                 <div>
                     <label class="block text-gray-300 text-sm mb-2">Nombre de la Categoría</label>
-                    <input type="text" id="nuevaCategoria" name="categoria" required 
-                           class="w-full px-4 py-2 rounded-xl form-input" placeholder="Ej: Bebidas Frías">
+                    <input type="text" id="nuevaCategoria" name="categoria" required
+                        class="w-full bg-black border border-white/20 rounded-xl px-4 py-3 text-white focus:border-yellow-500 focus:ring focus:ring-yellow-500/20 transition-all"
+                        placeholder="Ej: Bebidas Frías">
                 </div>
-                
+
                 <div class="flex justify-end space-x-4 mt-8">
-                    <button type="button" onclick="cerrarModal('modalCategoria')" 
-                            class="px-6 py-3 text-gray-300 hover:text-white transition-colors">
-                        Cancelar
+                    <button type="button" onclick="cerrarModal('modalCategoria')"
+                        class="px-6 py-3 font-semibold rounded-xl text-black transition-all duration-300"
+                        style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                        <i class="fas fa-times mr-2"></i> Cancelar
                     </button>
-                    <button type="submit" 
-                            class="btn-glow bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl transition-all duration-300">
-                        <i class="fas fa-plus mr-2"></i>Agregar
+                    <button type="submit"
+                        class="px-6 py-3 font-semibold rounded-xl text-black transition-all duration-300"
+                        style="background: linear-gradient(45deg, #ffea00, #ff7b00);">
+                        <i class="fas fa-save mr-2"></i> Agregar
                     </button>
                 </div>
             </form>
@@ -505,73 +564,72 @@ $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    // Event listeners
-    document.getElementById('busqueda').addEventListener('input', actualizarTabla);
-    document.getElementById('filtroCategoria').addEventListener('change', actualizarTabla);
-    document.getElementById('filtroEstado').addEventListener('change', actualizarTabla);
-    
-    document.getElementById('formPlato').addEventListener('submit', function(e) {
-        e.preventDefault();
-        guardarProducto();
-    });
-    
-    document.getElementById('formCategoria').addEventListener('submit', function(e) {
-        e.preventDefault();
-        agregarCategoria();
-    });
-});
+        document.addEventListener('DOMContentLoaded', function () {
+            // Event listeners
+            document.getElementById('busqueda').addEventListener('input', actualizarTabla);
+            document.getElementById('filtroCategoria').addEventListener('change', actualizarTabla);
+            document.getElementById('filtroEstado').addEventListener('change', actualizarTabla);
 
-function actualizarTabla() {
-    const busqueda = document.getElementById('busqueda').value;
-    const categoria = document.getElementById('filtroCategoria').value;
-    const estado = document.getElementById('filtroEstado').value;
-    
-    let url = `../../controllers/admin/menu_controller.php?action=listar`;
-    if (busqueda) url += `&busqueda=${encodeURIComponent(busqueda)}`;
-    if (categoria) url += `&categoria=${encodeURIComponent(categoria)}`;
-    if (estado) url += `&estado=${encodeURIComponent(estado)}`;
-    
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                actualizarTablaProductos(data.data);
-            }
+            document.getElementById('formPlato').addEventListener('submit', function (e) {
+                e.preventDefault();
+                guardarProducto();
+            });
+
+            document.getElementById('formCategoria').addEventListener('submit', function (e) {
+                e.preventDefault();
+                agregarCategoria();
+            });
         });
-}
 
-function actualizarTablaProductos(productos) {
-    const tbody = document.getElementById('tbodyProductos');
-    tbody.innerHTML = '';
-    
-    if (productos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-400">No hay productos encontrados</td></tr>';
-        return;
-    }
-    
-    productos.forEach(producto => {
-        const tr = document.createElement('tr');
-        tr.className = 'table-row';
-        tr.innerHTML = `
+        function actualizarTabla() {
+            const busqueda = document.getElementById('busqueda').value;
+            const categoria = document.getElementById('filtroCategoria').value;
+            const estado = document.getElementById('filtroEstado').value;
+
+            let url = `../../controllers/admin/menu_controller.php?action=listar`;
+            if (busqueda) url += `&busqueda=${encodeURIComponent(busqueda)}`;
+            if (categoria) url += `&categoria=${encodeURIComponent(categoria)}`;
+            if (estado) url += `&estado=${encodeURIComponent(estado)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        actualizarTablaProductos(data.data);
+                    }
+                });
+        }
+
+        function actualizarTablaProductos(productos) {
+            const tbody = document.getElementById('tbodyProductos');
+            tbody.innerHTML = '';
+
+            if (productos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-400">No hay productos encontrados</td></tr>';
+                return;
+            }
+
+            productos.forEach(producto => {
+                const tr = document.createElement('tr');
+                tr.className = 'table-row';
+                tr.innerHTML = `
             <td class="px-6 py-4">
-                ${producto.foto ? 
-                    `<img src="../../uploads/${producto.foto}" alt="${producto.nombre}" class="product-image">` : 
-                    `<div class="product-image bg-gray-600 flex items-center justify-center">
+                ${producto.foto ?
+                        `<img src="../../uploads/${producto.foto}" alt="${producto.nombre}" class="product-image">` :
+                        `<div class="product-image bg-gray-600 flex items-center justify-center">
                         <i class="fas fa-utensils text-gray-400"></i>
                     </div>`
-                }
+                    }
             </td>
             <td class="px-6 py-4">
                 <div class="text-white font-medium">${producto.nombre}</div>
             </td>
-            <td class="px-6 py-4 text-gray-300 text-sm max-w-xs truncate">${producto.descripcion || 'Sin descripción'}</td>
-            <td class="px-6 py-4">
+             <td class="px-6 py-4">
                 <span class="px-2 py-1 bg-blue-500 bg-opacity-20 text-blue-300 rounded-full text-xs">
                     ${producto.categoria}
                 </span>
             </td>
-            <td class="px-6 py-4 text-green-400 font-bold">$${parseFloat(producto.precio).toFixed(2)}</td>
+            <td class="px-6 py-4 text-green-400 font-bold">${parseFloat(producto.precio).toFixed(2)}</td>
             <td class="px-6 py-4">
                 <span class="px-2 py-1 rounded-full text-xs ${producto.estado === 'disponible' ? 'bg-green-500 bg-opacity-20 text-green-300' : 'bg-red-500 bg-opacity-20 text-red-300'}">
                     ${producto.estado_texto}
@@ -584,8 +642,8 @@ function actualizarTablaProductos(productos) {
                         <i class="fas fa-edit"></i>
                     </button>
                     <button onclick="cambiarEstado(${producto.id}, '${producto.estado}')" 
-                            class="text-yellow-400 hover:text-yellow-300 transition-colors">
-                        <i class="fas fa-toggle-on"></i>
+                            class="transition-colors ${producto.estado === 'disponible' ? 'text-green-400 hover:text-green-300' : 'text-gray-400 hover:text-gray-300'}">
+                        <i class="fas ${producto.estado === 'disponible' ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
                     </button>
                     <button onclick="eliminarProducto(${producto.id})" 
                             class="text-red-400 hover:text-red-300 transition-colors">
@@ -594,149 +652,167 @@ function actualizarTablaProductos(productos) {
                 </div>
             </td>
         `;
-        tbody.appendChild(tr);
-    });
-}
+                tbody.appendChild(tr);
+            });
+        }
 
-function abrirModalPlato() {
-    document.getElementById('tituloModalPlato').textContent = 'Agregar Plato';
-    document.getElementById('formPlato').reset();
-    document.getElementById('platoId').value = '';
-    document.getElementById('previewFoto').classList.add('hidden');
-    document.getElementById('modalPlato').classList.remove('hidden');
-}
 
-function abrirModalCategoria() {
-    document.getElementById('formCategoria').reset();
-    document.getElementById('modalCategoria').classList.remove('hidden');
-}
-
-function cerrarModal(modalId) {
-    document.getElementById(modalId).classList.add('hidden');
-}
-
-function editarProducto(id) {
-    fetch(`../../controllers/admin/menu_controller.php?action=obtener&id=${id}`)
+        function actualizarEstadisticas() {
+    fetch('../../controllers/admin/menu_controller.php?action=estadisticas')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                const producto = data.data;
-                document.getElementById('tituloModalPlato').textContent = 'Editar Plato';
-                document.getElementById('platoId').value = producto.id;
-                document.getElementById('nombre').value = producto.nombre;
-                document.getElementById('descripcion').value = producto.descripcion || '';
-                document.getElementById('precio').value = producto.precio;
-                document.getElementById('categoria').value = producto.categoria;
-                document.getElementById('estado').value = producto.estado;
-                
-                if (producto.foto) {
-                    document.getElementById('previewFoto').src = `../../uploads/${producto.foto}`;
+                document.getElementById('totalProductos').textContent = data.data.total_productos;
+                document.getElementById('productosActivos').textContent = data.data.productos_activos;
+                document.getElementById('precioPromedio').textContent = '$' + parseFloat(data.data.precio_promedio).toFixed(2);
+            }
+        })
+        .catch(error => console.error('Error al actualizar estadísticas:', error));
+}
+
+        function abrirModalPlato() {
+            document.getElementById('tituloModalPlato').textContent = 'Agregar Plato';
+            document.getElementById('formPlato').reset();
+            document.getElementById('platoId').value = '';
+            document.getElementById('previewFoto').classList.add('hidden');
+            document.getElementById('modalPlato').classList.remove('hidden');
+        }
+
+        function abrirModalCategoria() {
+            document.getElementById('formCategoria').reset();
+            document.getElementById('modalCategoria').classList.remove('hidden');
+        }
+
+        function cerrarModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function editarProducto(id) {
+            fetch(`../../controllers/admin/menu_controller.php?action=obtener&id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const producto = data.data;
+                        document.getElementById('tituloModalPlato').textContent = 'Editar Plato';
+                        document.getElementById('platoId').value = producto.id;
+                        document.getElementById('nombre').value = producto.nombre;
+                        document.getElementById('descripcion').value = producto.descripcion || '';
+                        document.getElementById('precio').value = producto.precio;
+                        document.getElementById('categoria').value = producto.categoria;
+                        document.getElementById('estado').value = producto.estado;
+
+                        if (producto.foto) {
+                            document.getElementById('previewFoto').src = `../../uploads/${producto.foto}`;
+                            document.getElementById('previewFoto').classList.remove('hidden');
+                        }
+
+                        document.getElementById('modalPlato').classList.remove('hidden');
+                    }
+                });
+        }
+
+        function guardarProducto() {
+            const formData = new FormData(document.getElementById('formPlato'));
+
+            fetch('../../controllers/admin/menu_controller.php?action=guardar', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        cerrarModal('modalPlato');
+                        actualizarTabla();
+                        actualizarEstadisticas();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                });
+        }
+
+        function cambiarEstado(id, estadoActual) {
+            if (confirm('¿Estás seguro de cambiar el estado de este producto?')) {
+                fetch('../../controllers/admin/menu_controller.php?action=cambiarEstado', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `id=${id}&estado=${estadoActual}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            actualizarTabla();
+                            actualizarEstadisticas();
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    });
+            }
+        }
+
+        function eliminarProducto(id) {
+            if (confirm('¿Estás seguro de eliminar este producto?')) {
+                fetch('../../controllers/admin/menu_controller.php?action=eliminar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `id=${id}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            actualizarTabla();
+                            actualizarEstadisticas();
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    });
+            }
+        }
+
+        function agregarCategoria() {
+            const categoria = document.getElementById('nuevaCategoria').value;
+
+            fetch('../../controllers/admin/menu_controller.php?action=agregarCategoria', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `categoria=${encodeURIComponent(categoria)}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Categoría agregada correctamente');
+                        cerrarModal('modalCategoria');
+                        location.reload(); // Recargar para actualizar el select
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                });
+        }
+
+        function mostrarPreview(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('previewFoto').src = e.target.result;
                     document.getElementById('previewFoto').classList.remove('hidden');
                 }
-                
-                document.getElementById('modalPlato').classList.remove('hidden');
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Cerrar modales al hacer clic fuera
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('modal-backdrop')) {
+                e.target.parentElement.classList.add('hidden');
             }
         });
-}
-
-function guardarProducto() {
-    const formData = new FormData(document.getElementById('formPlato'));
-    
-    fetch('../../controllers/admin/menu_controller.php?action=guardar', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            cerrarModal('modalPlato');
-            actualizarTabla();
-        } else {
-            alert('Error: ' + data.error);
-        }
-    });
-}
-
-function cambiarEstado(id, estadoActual) {
-    if (confirm('¿Estás seguro de cambiar el estado de este producto?')) {
-        fetch('../../controllers/admin/menu_controller.php?action=cambiarEstado', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `id=${id}&estado=${estadoActual}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                actualizarTabla();
-            } else {
-                alert('Error: ' + data.error);
-            }
-        });
-    }
-}
-
-function eliminarProducto(id) {
-    if (confirm('¿Estás seguro de eliminar este producto?')) {
-        fetch('../../controllers/admin/menu_controller.php?action=eliminar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `id=${id}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                actualizarTabla();
-            } else {
-                alert('Error: ' + data.error);
-            }
-        });
-    }
-}
-
-function agregarCategoria() {
-    const categoria = document.getElementById('nuevaCategoria').value;
-    
-    fetch('../../controllers/admin/menu_controller.php?action=agregarCategoria', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `categoria=${encodeURIComponent(categoria)}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Categoría agregada correctamente');
-            cerrarModal('modalCategoria');
-            location.reload(); // Recargar para actualizar el select
-        } else {
-            alert('Error: ' + data.error);
-        }
-    });
-}
-
-function mostrarPreview(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('previewFoto').src = e.target.result;
-            document.getElementById('previewFoto').classList.remove('hidden');
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Cerrar modales al hacer clic fuera
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('modal-backdrop')) {
-        e.target.parentElement.classList.add('hidden');
-    }
-});
     </script>
 </body>
+
 </html>

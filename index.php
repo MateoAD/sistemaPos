@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+// Verificar si existe una cookie de usuario guardado
+if (isset($_COOKIE['remember_username'])) {
+    $saved_username = $_COOKIE['remember_username'];
+} else {
+    $saved_username = '';
+}
+
 // Si ya está logueado, redirigir según su rol
 if (isset($_SESSION['user_id'])) {
     switch ($_SESSION['rol']) {
@@ -28,11 +35,11 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $usuario = $_POST['usuario'];
     $password = $_POST['password'];
+    $remember = isset($_POST['remember']) ? true : false;
     
     require_once 'controllers/db.php';
     
     try {
-        // Buscar usuario con credenciales válidas
         $stmt = $pdo->prepare("SELECT u.*, r.nombre as rol_nombre 
                               FROM usuarios u 
                               JOIN roles r ON u.rol_id = r.id 
@@ -40,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute([$usuario]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Verificar contraseña (texto plano temporalmente)
         if ($user && $password === $user['contraseña']) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['usuario'] = $user['nombre'];
@@ -48,19 +54,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['rol'] = $user['rol_nombre'];
             $_SESSION['sucursal_id'] = $user['sucursal_id'];
             
-            // Redirigir según el rol
+            // Si el usuario marcó "recordar", guardar solo el nombre de usuario
+            if ($remember) {
+                setcookie('remember_username', $user['nombre'], time() + (30 * 24 * 60 * 60), '/'); // 30 días
+            } else {
+                // Si no quiere recordar, eliminar la cookie si existe
+                if (isset($_COOKIE['remember_username'])) {
+                    setcookie('remember_username', '', time() - 3600, '/');
+                }
+            }
+            
             switch ($user['rol_nombre']) {
                 case 'admin':
                     header("Location: pages/admin/dashboard.php");
                     break;
                 case 'mesero':
-                    header("Location: /mesero/dashboard.php");
+                    header("Location: pages/mesero/dashboard.php");
                     break;
                 case 'cajero':
-                    header("Location: /cajero/dashboard.php");
+                    header("Location: pages/cajero/dashboard.php");
                     break;
                 case 'cocinero':
-                    header("Location: /cocinero/dashboard.php");
+                    header("Location: pages/cocinero/dashboard.php");
                     break;
                 default:
                     $error = 'Rol no reconocido';
@@ -86,57 +101,80 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0F0F0F;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .login-container {
-            background: white;
+            background: #1E201F;
             border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             width: 100%;
             max-width: 400px;
         }
         .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #2C302F;
             color: white;
             padding: 30px;
             text-align: center;
         }
         .login-form {
             padding: 40px;
+            color: white;
         }
         .form-control {
+            background: #2C302F;
+            border: 1px solid #1E201F;
             border-radius: 10px;
-            border: 1px solid #e0e0e0;
             padding: 12px 15px;
             margin-bottom: 20px;
+            color: white;
         }
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: #2C302F;
+            border-color: #0F0F0F;
+            box-shadow: 0 0 0 0.2rem rgba(15, 15, 15, 0.25);
+            color: white;
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .form-label {
+            color: white;
         }
         .btn-login {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #2C302F;
             border: none;
             border-radius: 10px;
             color: white;
             padding: 12px;
             width: 100%;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
         .btn-login:hover {
-            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            background: #0F0F0F;
             color: white;
+            transform: translateY(-2px);
         }
         .error-message {
-            color: #dc3545;
+            color: #ff4d4d;
             font-size: 14px;
             text-align: center;
             margin-bottom: 15px;
+            background: rgba(255, 77, 77, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .form-check-label {
+            color: white;
+        }
+        .form-check-input:checked {
+            background-color: #2C302F;
+            border-color: #0F0F0F;
         }
     </style>
 </head>
@@ -158,14 +196,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="usuario" class="form-label">
                         <i class="fas fa-user"></i> Usuario
                     </label>
-                    <input type="text" class="form-control" id="usuario" name="usuario" required>
+                    <input type="text" class="form-control" id="usuario" name="usuario" 
+                           value="<?php echo htmlspecialchars($saved_username); ?>" required 
+                           placeholder="Ingresa tu usuario">
                 </div>
                 
                 <div class="mb-4">
                     <label for="password" class="form-label">
                         <i class="fas fa-lock"></i> Contraseña
                     </label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <input type="password" class="form-control" id="password" name="password" required
+                           placeholder="Ingresa tu contraseña">
+                </div>
+
+                <div class="mb-4 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember"
+                           <?php echo $saved_username ? 'checked' : ''; ?>>
+                    <label class="form-check-label" for="remember">
+                        <i class="fas fa-clock"></i> Recordar mi usuario
+                    </label>
                 </div>
                 
                 <button type="submit" class="btn btn-login">
@@ -174,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </form>
             
             <div class="text-center mt-3">
-                <small class="text-muted">
+                <small style="color: rgba(255, 255, 255, 0.6);">
                     <i class="fas fa-info-circle"></i> 
                     Ingresa con tus credenciales asignadas
                 </small>

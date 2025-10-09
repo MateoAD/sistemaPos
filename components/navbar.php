@@ -37,14 +37,8 @@ $total_mesas = $total_mesas ?? 0;
             box-sizing: border-box;
         }
 
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-        }
-
         .sidebar {
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
+            background: #0F0F0F;
             backdrop-filter: blur(20px);
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -52,6 +46,69 @@ $total_mesas = $total_mesas ?? 0;
 
         .sidebar-collapsed {
             width: 80px !important;
+        }
+
+        .sidebar-collapsed .nav-item {
+            margin: 2px 8px !important;
+            padding: 8px 8px !important;
+            justify-content: center !important;
+        }
+
+        .sidebar-collapsed .nav-item i {
+            margin: 0 !important;
+            font-size: 1rem !important;
+        }
+
+        .sidebar-collapsed .nav-item .sidebar-text {
+            display: none !important;
+        }
+
+        .sidebar-collapsed .nav-item > div {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+
+        /* Ajuste automático de elementos cuando sidebar cambia */
+        .main-content {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            width: calc(100% - 288px) !important; /* 72 * 4 = 288px cuando sidebar expandido */
+        }
+
+        .sidebar-collapsed ~ .main-content {
+            width: calc(100% - 80px) !important; /* 80px cuando sidebar colapsado */
+        }
+
+        /* Estilo WhatsApp para contadores en sidebar colapsado */
+       .sidebar-collapsed .counter-badge {
+    z-index: 9999 !important;
+    background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.sidebar-collapsed .pulse-dot {
+    z-index: 9998 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar-collapsed .nav-item > div {
+    position: relative !important;
+}
+
+        .sidebar-collapsed .nav-item {
+            position: relative !important;
+        }
+
+        .sidebar-collapsed .pulse-dot {
+            position: absolute !important;
+            top: -5px !important;
+            right: -5px !important;
+            width: 8px !important;
+            height: 8px !important;
         }
 
         .nav-item {
@@ -79,13 +136,13 @@ $total_mesas = $total_mesas ?? 0;
 
         .nav-item:hover {
             transform: translateX(8px);
-            background: rgba(255, 255, 255, 0.1);
+            background: #1E201F;
         }
 
         .nav-item.active {
-            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            background: #2C302F;
             transform: translateX(8px);
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 4px 15px rgba(44, 48, 47, 0.5);
         }
 
         .pulse-dot {
@@ -135,11 +192,10 @@ $total_mesas = $total_mesas ?? 0;
                 top: 1rem;
                 left: 1rem;
                 z-index: 1000;
-                background: rgba(0, 0, 0, 0.5);
+                background: #1E201F;
                 color: white;
                 padding: 0.75rem;
                 border-radius: 0.5rem;
-                backdrop-filter: blur(10px);
             }
         }
     </style>
@@ -150,11 +206,12 @@ $total_mesas = $total_mesas ?? 0;
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Sidebar Navigation -->
+   <!-- Sidebar Navigation -->
     <div id="sidebar" class="sidebar fixed top-0 left-0 w-72 h-full z-40 transition-all duration-300">
         <div class="p-6 border-b border-white border-opacity-20">
             <div class="flex items-center">
-                <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center mr-4">
+                <div
+                    class="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center mr-4">
                     <i class="fas fa-utensils text-white text-xl"></i>
                 </div>
                 <div class="flex items-center mb-4">
@@ -170,73 +227,78 @@ $total_mesas = $total_mesas ?? 0;
         </div>
 
         <nav class="mt-6 flex-1">
-            <a href="dashboard.php" class="nav-link">
-                <div class="nav-item active" data-page="dashboard">
-                    <div class="px-6 py-4 flex items-center text-white">
-                        <i class="fas fa-tachometer-alt text-xl mr-4"></i>
-                        <span class="sidebar-text">Dashboard</span>
-                    </div>
+            <a href="dashboard.php">
+            <div class="nav-item active">
+                <div class="px-6 py-4 flex items-center text-white">
+                    <i class="fas fa-tachometer-alt text-xl mr-4"></i>
+                    <span class="sidebar-text">Dashboard</span>
                 </div>
+            </div>
             </a>
+            <!-- Ventas -->
+             <a href="ventas.php">
+            <div class="nav-item">
+                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
+                    <i class="fas fa-cash-register text-xl mr-4"></i>
+                    <span class="sidebar-text">Ventas</span>
+                    <span
+                        class="sidebar-text ml-auto text-black font-semibold text-xs px-2 py-1 rounded-full counter-badge" style="background: linear-gradient(45deg, #ffea00, #ff7b00);"><?= $total_ventas ?></span>
+                </div>
+            </div>
+    </a>
 
-            <a href="ventas.php" class="nav-link">
-                <div class="nav-item" data-page="ventas">
-                    <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white">
-                        <i class="fas fa-cash-register text-xl mr-4"></i>
-                        <span class="sidebar-text">Ventas</span>
-                        <span class="sidebar-text ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?= $total_ventas ?></span>
-                    </div>
+            <!-- Empleados -->
+              <a href="empleados.php">
+            <div class="nav-item">
+                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
+                    <i class="fas fa-users text-xl mr-4"></i>
+                    <span class="sidebar-text">Empleados</span>
+                   <span
+                        class="sidebar-text ml-auto text-black font-semibold text-xs px-2 py-1 rounded-full counter-badge" style="background: linear-gradient(45deg, #ffea00, #ff7b00);"><?= $total_empleados ?></span>
                 </div>
+            </div>
             </a>
+            <!-- Menú -->
+             <a href="menu.php">
+            <div class="nav-item">
+                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
+                    <i class="fas fa-utensils text-xl mr-4"></i>
+                    <span class="sidebar-text">Menú</span>
+                   <span
+                        class="sidebar-text ml-auto text-black font-semibold text-xs px-2 py-1 rounded-full counter-badge" style="background: linear-gradient(45deg, #ffea00, #ff7b00);"><?= $total_menu ?></span>
+                </div>
+            </div>
+            </a>
+            <!-- Mesas -->
+             <a href="mesas.php">
+            <div class="nav-item">
+                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
+                    <i class="fas fa-table text-xl mr-4"></i>
+                    <span class="sidebar-text">Mesas</span>
+                   <span
+                        class="sidebar-text ml-auto text-black font-semibold text-xs px-2 py-1 rounded-full counter-badge" style="background: linear-gradient(45deg, #ffea00, #ff7b00);"><?= $total_mesas ?></span>
+                </div>
+            </div>
+             </a>
+            <!-- Analytics -->
+             <a href="analytics.php">
+            <div class="nav-item">
+                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
+                    <i class="fas fa-chart-line text-xl mr-4"></i>
+                    <span class="sidebar-text">Analytics</span>
+                    <div class="sidebar-text ml-auto pulse-dot"></div>
+                </div>
+            </div>
 
-            <a href="empleados.php" class="nav-link">
-                <div class="nav-item" data-page="empleados">
-                    <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white">
-                        <i class="fas fa-users text-xl mr-4"></i>
-                        <span class="sidebar-text">Empleados</span>
-                        <span class="sidebar-text ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?= $total_empleados ?></span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="menu.php" class="nav-link">
-                <div class="nav-item" data-page="menu">
-                    <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white">
-                        <i class="fas fa-utensils text-xl mr-4"></i>
-                        <span class="sidebar-text">Menú</span>
-                        <span class="sidebar-text ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?= $total_menu ?></span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="mesas.php" class="nav-link">
-                <div class="nav-item" data-page="mesas">
-                    <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white">
-                        <i class="fas fa-table text-xl mr-4"></i>
-                        <span class="sidebar-text">Mesas</span>
-                        <span class="sidebar-text ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?= $total_mesas ?></span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="analytics.php" class="nav-link">
-                <div class="nav-item" data-page="analytics">
-                    <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white">
-                        <i class="fas fa-chart-line text-xl mr-4"></i>
-                        <span class="sidebar-text">Analytics</span>
-                        <div class="sidebar-text ml-auto pulse-dot"></div>
-                    </div>
-                </div>
-            </a>
         </nav>
 
-        <div class="p-6 border-t border-white border-opacity-20">
-            <button class="nav-item w-full" onclick="logout()">
-                <div class="px-4 py-3 flex items-center text-gray-300 hover:text-white">
+        <div class="p-6 border-t border-white border-opacity-20 flex justify-center">
+            <a href="../../logout.php"  class="nav-item w-full block">
+                <div class="bg-red-500 hover:bg-red-600 px-4 py-3 flex items-center text-gray-300 hover:text-white rounded-lg transition-colors duration-200">
                     <i class="fas fa-sign-out-alt mr-3"></i>
                     <span class="sidebar-text">Cerrar Sesión</span>
                 </div>
-            </button>
+            </a>
         </div>
     </div>
 
@@ -251,6 +313,26 @@ $total_mesas = $total_mesas ?? 0;
         });
 
         function initializeNavbar() {
+            // Restaurar estado del sidebar desde localStorage
+            const savedState = localStorage.getItem('sidebarCollapsed');
+            if (savedState === 'true') {
+                sidebarCollapsed = true;
+                const sidebar = document.getElementById('sidebar');
+                const toggleBtn = document.getElementById('sidebarToggle');
+                
+                if (sidebar && toggleBtn) {
+                    sidebar.classList.add('sidebar-collapsed');
+                    document.querySelectorAll('.main-content').forEach(content => {
+                        content.classList.remove('ml-72');
+                        content.classList.add('ml-20');
+                    });
+                    toggleBtn.innerHTML = '<i class="fas fa-angle-right text-xl"></i>';
+                    document.querySelectorAll('.sidebar-text').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                }
+            }
+
             // Toggle sidebar
             const sidebarToggle = document.getElementById('sidebarToggle');
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -291,37 +373,86 @@ $total_mesas = $total_mesas ?? 0;
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const toggleBtn = document.getElementById('sidebarToggle');
-            const mainContent = document.querySelector('.main-content');
 
             if (!sidebar || !toggleBtn) return;
 
             sidebarCollapsed = !sidebarCollapsed;
 
             if (sidebarCollapsed) {
+                // Colapsar sidebar
                 sidebar.classList.add('sidebar-collapsed');
-                if (mainContent) {
-                    mainContent.classList.remove('ml-72');
-                    mainContent.classList.add('ml-20');
-                }
+                
+                // Ajustar todos los elementos main-content para usar el espacio disponible
+                document.querySelectorAll('.main-content').forEach(content => {
+                    content.classList.remove('ml-72');
+                    content.classList.add('ml-20');
+                    // Forzar reflow para animación suave
+                    content.style.width = 'calc(100% - 80px)';
+                });
+                
                 toggleBtn.innerHTML = '<i class="fas fa-angle-right text-xl"></i>';
                 
                 // Ocultar texto del sidebar
                 document.querySelectorAll('.sidebar-text').forEach(el => {
                     el.style.display = 'none';
                 });
+                
+                // Mostrar contadores estilo WhatsApp
+                setTimeout(() => {
+                    document.querySelectorAll('.counter-badge').forEach(counter => {
+                        if (counter.closest('.sidebar-collapsed')) {
+                            counter.style.display = 'flex';
+                            counter.style.position = 'absolute';
+                            counter.style.top = '2px';
+                            counter.style.right = '2px';
+                        }
+                    });
+                    document.querySelectorAll('.pulse-dot').forEach(dot => {
+                        if (dot.closest('.sidebar-collapsed')) {
+                            dot.style.display = 'block';
+                        }
+                    });
+                }, 100);
+                
             } else {
+                // Expandir sidebar
                 sidebar.classList.remove('sidebar-collapsed');
-                if (mainContent) {
-                    mainContent.classList.remove('ml-20');
-                    mainContent.classList.add('ml-72');
-                }
+                
+                // Ajustar todos los elementos main-content para el nuevo tamaño
+                document.querySelectorAll('.main-content').forEach(content => {
+                    content.classList.remove('ml-20');
+                    content.classList.add('ml-72');
+                    // Forzar reflow para animación suave
+                    content.style.width = 'calc(100% - 288px)';
+                });
+                
                 toggleBtn.innerHTML = '<i class="fas fa-angle-left text-xl"></i>';
                 
                 // Mostrar texto del sidebar
                 document.querySelectorAll('.sidebar-text').forEach(el => {
                     el.style.display = 'block';
                 });
+                
+                // Ocultar contadores estilo WhatsApp
+                document.querySelectorAll('.counter-badge').forEach(counter => {
+                    counter.style.display = '';
+                    counter.style.position = '';
+                    counter.style.top = '';
+                    counter.style.right = '';
+                });
+                
+                document.querySelectorAll('.pulse-dot').forEach(dot => {
+                    dot.style.display = '';
+                });
             }
+            
+            // Forzar re-layout para que los elementos se ajusten al nuevo espacio
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 50);
+            
+            // Guardar estado en localStorage
+            localStorage.setItem('sidebarCollapsed', sidebarCollapsed);
         }
 
         function toggleMobileSidebar() {

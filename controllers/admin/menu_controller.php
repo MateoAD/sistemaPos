@@ -23,6 +23,9 @@ switch ($action) {
     case 'agregarCategoria':
         agregarCategoria();
         break;
+    case 'estadisticas':
+        estadisticasMenu();
+        break;
     default:
         echo json_encode(['error' => 'Acción no válida']);
 }
@@ -168,6 +171,21 @@ function agregarCategoria() {
         $stmt->execute([$categoria]);
         
         echo json_encode(['success' => true, 'message' => 'Categoría agregada correctamente']);
+    } catch (Exception $e) {
+        echo json_encode(['error' => $e->getMessage()]);
+    }
+}
+
+function estadisticasMenu() {
+    global $pdo;
+    try {
+        $stmt = $pdo->query("SELECT 
+            COUNT(*) as total_productos,
+            COUNT(CASE WHEN estado = 'disponible' THEN 1 END) as productos_activos,
+            AVG(precio) as precio_promedio
+            FROM menu");
+        $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
+        echo json_encode(['success' => true, 'data' => $estadisticas]);
     } catch (Exception $e) {
         echo json_encode(['error' => $e->getMessage()]);
     }

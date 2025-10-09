@@ -28,35 +28,26 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
         }
     </script>
     <style>
-        * {
+       * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0F0F0F;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
+            color: #E0E0E0;
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            background: #1E201F;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
-        .sidebar {
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        .sidebar-collapsed {
-            width: 80px !important;
-        }
+    
 
         .nav-item {
             position: relative;
@@ -66,49 +57,33 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
             overflow: hidden;
         }
 
-        .nav-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .nav-item:hover::before {
-            left: 100%;
-        }
-
         .nav-item:hover {
             transform: translateX(8px);
-            background: rgba(255, 255, 255, 0.1);
+            background: #2C302F;
         }
 
         .nav-item.active {
-            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            background: #2C302F;
             transform: translateX(8px);
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .metric-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: #1E201F;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
             overflow: hidden;
         }
 
-        .metric-card::before {
+       .metric-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
+            height: 5px;
+            background: linear-gradient(90deg, #ffea00, #ff7b00);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -119,20 +94,65 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
 
         .metric-card:hover {
             transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            background: #2C302F;
         }
 
-        .chart-container {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            .chart-container {
+            background: #1E201F;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ffea00, #ff7b00);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
         .chart-container:hover {
-            background: rgba(255, 255, 255, 0.12);
+            background: linear-gradient(135deg, #2C302F);
             transform: translateY(-5px);
+        }
+
+        .chart-container:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Estilo para los items de productos populares */
+        .chart-container .flex.items-center.justify-between {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chart-container .flex.items-center.justify-between::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .chart-container .flex.items-center.justify-between:hover {
+            background: linear-gradient(135deg,  #2C302F);
+            transform: translateX(5px);
+        }
+
+        .chart-container .flex.items-center.justify-between:hover::before {
+            transform: scaleX(1);
         }
 
         .floating-widget {
@@ -173,8 +193,8 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
 
 
         .notification {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+             background: #2C302F;
+            color: #E0E0E0;
             padding: 12px 24px;
             border-radius: 50px;
             margin: 8px 0;
@@ -221,106 +241,10 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
 </head>
 
 <body>
-    <!-- Mobile Menu Button -->
-    <button id="mobileMenuBtn"
-        class="lg:hidden fixed top-4 left-4 z-50 bg-black bg-opacity-50 text-white p-3 rounded-xl backdrop-blur-sm">
-        <i class="fas fa-bars"></i>
-    </button>
-
-    <!-- Sidebar Navigation -->
-    <div id="sidebar" class="sidebar fixed top-0 left-0 w-72 h-full z-40 transition-all duration-300">
-        <div class="p-6 border-b border-white border-opacity-20">
-            <div class="flex items-center">
-                <div
-                    class="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center mr-4">
-                    <i class="fas fa-utensils text-white text-xl"></i>
-                </div>
-                <div class="flex items-center mb-4">
-                    <div class="sidebar-text">
-                        <p class="text-white font-semibold text-sm">Admin</p>
-                        <p class="text-gray-300 text-xs">Administrador</p>
-                    </div>
-                </div>
-            </div>
-            <button id="sidebarToggle" class="absolute top-6 right-4 text-white hover:text-gray-300">
-                <i class="fas fa-angle-left text-xl"></i>
-            </button>
-        </div>
-
-        <nav class="mt-6 flex-1">
-            <div class="nav-item active">
-                <div class="px-6 py-4 flex items-center text-white">
-                    <i class="fas fa-tachometer-alt text-xl mr-4"></i>
-                    <span class="sidebar-text">Dashboard</span>
-                </div>
-            </div>
-
-            <!-- Ventas -->
-             <a href="ventas.php">
-            <div class="nav-item">
-                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
-                    <i class="fas fa-cash-register text-xl mr-4"></i>
-                    <span class="sidebar-text">Ventas</span>
-                    <span
-                        class="sidebar-text ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?= $total_ventas ?></span>
-                </div>
-            </div>
-    </a>
-
-            <!-- Empleados -->
-              <a href="empleados.php">
-            <div class="nav-item">
-                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
-                    <i class="fas fa-users text-xl mr-4"></i>
-                    <span class="sidebar-text">Empleados</span>
-                    <span
-                        class="sidebar-text ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?= $total_empleados ?></span>
-                </div>
-            </div>
-            </a>
-            <!-- Menú -->
-             <a href="menu.php">
-            <div class="nav-item">
-                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
-                    <i class="fas fa-utensils text-xl mr-4"></i>
-                    <span class="sidebar-text">Menú</span>
-                    <span
-                        class="sidebar-text ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?= $total_menu ?></span>
-                </div>
-            </div>
-            </a>
-            <!-- Mesas -->
-            <div class="nav-item">
-                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
-                    <i class="fas fa-table text-xl mr-4"></i>
-                    <span class="sidebar-text">Mesas</span>
-                    <span
-                        class="sidebar-text ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?= $total_mesas ?></span>
-                </div>
-            </div>
-
-            <div class="nav-item">
-                <div class="px-6 py-4 flex items-center text-gray-300 hover:text-white cursor-pointer">
-                    <i class="fas fa-chart-line text-xl mr-4"></i>
-                    <span class="sidebar-text">Analytics</span>
-                    <div class="sidebar-text ml-auto pulse-dot"></div>
-                </div>
-            </div>
-
-        </nav>
-
-        <div class="p-6 border-t border-white border-opacity-20">
-            <a href="../../controllers/index/logout.php" class="nav-item w-full block">
-                <div class="px-4 py-3 flex items-center text-gray-300 hover:text-white">
-                    <i class="fas fa-sign-out-alt mr-3"></i>
-                    <span class="sidebar-text">Cerrar Sesión</span>
-                </div>
-            </a>
-        </div>
-    </div>
+    <?php include '../../components/navbar.php'; ?>
 
     <!-- Main Content -->
-    <div id="mainContent" class="ml-72 transition-all duration-300 p-8">
+    <div id="mainContent" class="main-content ml-72 transition-all duration-300 p-8" style="transition: margin-left 0.3s ease-in-out;">
         <!-- Header -->
         <header class="glass-card rounded-2xl p-6 mb-8">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center">
@@ -338,11 +262,6 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
                             <span class="text-sm">Sistema Online</span>
                         </div>
                     </div>
-                    <a href="../../controllers/index/logout.php" 
-                       class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
-                        <i class="fas fa-sign-out-alt mr-2"></i>
-                        Cerrar Sesión
-                    </a>
                 </div>
             </div>
         </header>
@@ -475,8 +394,6 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
         </div>
 
         <script>
-            // Variables globales
-            let sidebarCollapsed = false;
 
             // Inicialización
             document.addEventListener('DOMContentLoaded', function () {
@@ -490,10 +407,6 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
             });
 
             function initializeEventListeners() {
-                // Toggle sidebar
-                document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-                document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileSidebar);
-
                 // Nav items
                 document.querySelectorAll('.nav-item').forEach(item => {
                     item.addEventListener('click', function () {
@@ -503,42 +416,7 @@ require_once __DIR__ . '/../../controllers/admin/dashboard_controller.php';
                 });
             }
 
-            function toggleSidebar() {
-                const sidebar = document.getElementById('sidebar');
-                const mainContent = document.getElementById('mainContent');
-                const toggleBtn = document.getElementById('sidebarToggle').querySelector('i');
-
-                sidebarCollapsed = !sidebarCollapsed;
-
-                if (sidebarCollapsed) {
-                    sidebar.classList.add('sidebar-collapsed');
-                    mainContent.classList.remove('ml-72');
-                    mainContent.classList.add('ml-20');
-                    toggleBtn.classList.remove('fa-angle-left');
-                    toggleBtn.classList.add('fa-angle-right');
-
-                    // Ocultar texto del sidebar
-                    document.querySelectorAll('.sidebar-text').forEach(el => {
-                        el.style.display = 'none';
-                    });
-                } else {
-                    sidebar.classList.remove('sidebar-collapsed');
-                    mainContent.classList.remove('ml-20');
-                    mainContent.classList.add('ml-72');
-                    toggleBtn.classList.remove('fa-angle-right');
-                    toggleBtn.classList.add('fa-angle-left');
-
-                    // Mostrar texto del sidebar
-                    document.querySelectorAll('.sidebar-text').forEach(el => {
-                        el.style.display = 'block';
-                    });
-                }
-            }
-
-            function toggleMobileSidebar() {
-                const sidebar = document.getElementById('sidebar');
-                sidebar.classList.toggle('mobile-open');
-            }
+            
 
             function updateDateTime() {
                 const now = new Date();
